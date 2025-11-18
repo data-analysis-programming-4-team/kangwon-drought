@@ -44,8 +44,6 @@ def main():
         how="inner"
     )
 
-    print("SPI + WUI 병합 후:", df.shape)
-
     # SSI 합치기 (지역단위 X)
     df = df.merge(
         ssi[["year", "month_num", "SSI_global_raw"]],
@@ -76,6 +74,6 @@ def main():
     #완료 메세지
     print("전체 패널 CSV 저장 완료", panel_path)
     print("IDI only 값 CSV 저장 완료", idi_only_path)
-
+    
 if __name__ == "__main__":
     main()
