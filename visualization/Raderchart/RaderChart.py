@@ -82,3 +82,4 @@ plt.legend(
 plt.title("2025년 9월 강원도 내 4개 도시 방사형 차트", fontsize=15)
 plt.tight_layout()
 plt.show()
+
