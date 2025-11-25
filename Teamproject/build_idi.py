@@ -8,12 +8,13 @@ BASE_DIR = Path(__file__).resolve().parent
 SPI_PATH = BASE_DIR / "SPI" / "SPI_monthly.csv"
 SSI_PATH = BASE_DIR / "SSI" / "SSI_monthly.csv"
 WUI_PATH = BASE_DIR / "WUI" / "WUI_monthly.csv"
+INFRA_PATH = BASE_DIR / "Infra_idx" / "infra_index.csv"
 
 # IDI 결과 저장 폴더 및 파일 이름
 IDI_DIR = BASE_DIR / "IDI"
 PANEL_FILENAME = "IDI_monthly_panel.csv"
 ONLY_FILENAME = "IDI_monthly_only.csv"
-
+IDI_INFRA_FILENAME= "IDI_with_infra.csv"
 
 # CSV를 불러오는 함수
 def load_csv(path: Path) -> pd.DataFrame:
@@ -32,7 +33,20 @@ def main():
     spi = load_csv(SPI_PATH)
     ssi = load_csv(SSI_PATH)
     wui = load_csv(WUI_PATH)
+    infra = load_csv(INFRA_PATH)
 
+    # 인프라 인덱스 지역 이름 통일
+    region_map = {
+    "강릉시": "강릉",
+    "속초시": "속초",
+    "원주시": "원주",
+    "춘천시": "춘천",
+    "홍천군": "홍천",
+    "철원군": "철원",
+    "인제군": "인제",
+    }
+    infra["region"] = infra["region"].replace(region_map)
+    
     #SSI 값에 year, month_num 만들기
     ssi["year"] = ssi["month"].str.slice(0, 4).astype(int)
     ssi["month_num"] = ssi["month"].str.slice(5, 7).astype(int)
@@ -51,13 +65,26 @@ def main():
         how="left"
     )
 
+    # infra_index 합치기 (지역 단위 O)
+    df = df.merge(
+        infra[["region", "infra_index"]],
+        on="region",
+        how="left"
+    )
+
     # Z-SCORE 표준화
     df["SPI_z"] = zscore(df["SPI_raw"])
     df["WUI_z"] = zscore(df["WUI_raw"])
     df["SSI_z"] = zscore(df["SSI_global_raw"])
+    df["infra_z"] = zscore(df["infra_index"])
 
     # IDI 산출 (가중치는 모두 1/3으로 동일)
     df["IDI"] = (df["SPI_z"] + df["WUI_z"] + df["SSI_z"]) / 3
+
+    # 인프라 인덱스가 추가된 IDI 값 산출 (가중치는 1/4으로 동일)
+    df["IDI_with_infra"] = (
+        df["SPI_z"] + df["WUI_z"] + df["SSI_z"] + df["infra_z"]
+    ) / 4
 
     # IDI 결과 저장 폴더 생성
     os.makedirs(IDI_DIR, exist_ok=True)
@@ -67,7 +94,7 @@ def main():
     df.to_csv(panel_path, index=False, encoding="utf-8-sig")
 
     # IDI 값만 저장하는 CSV 생성
-    idi_only = df[["region", "year", "month_num", "month", "IDI"]].copy()
+    idi_only = df[["region", "year", "month_num", "month", "IDI","IDI_with_infra"]].copy()
     idi_only_path = IDI_DIR / ONLY_FILENAME
     idi_only.to_csv(idi_only_path, index=False, encoding="utf-8-sig")
 
