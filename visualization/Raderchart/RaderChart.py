@@ -22,7 +22,7 @@ vars8 = [
     "water_resilience_index",
     "emergency_water_idx",
     "water_budget_ratio_norm",
-    "pipe_index",
+    "old_pipe_ratio_norm",
     "mean_temp",
     "mean_humidity"
 ]
@@ -34,7 +34,7 @@ korean = {
     "water_resilience_index": "물 회복력 지수",
     "emergency_water_idx": "비상급수시설 지수",
     "water_budget_ratio_norm": "상수도 예산비중",
-    "pipe_index": "관로 노후도 지수",
+    "old_pipe_ratio_norm": "관로 노후도 지수",
     "mean_temp": "평균기온",
     "mean_humidity": "평균습도"
 }
@@ -82,4 +82,5 @@ plt.legend(
 plt.title("2025년 9월 강원도 내 4개 도시 방사형 차트", fontsize=15)
 plt.tight_layout()
 plt.show()
+
 
