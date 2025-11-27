@@ -12,6 +12,9 @@ df = pd.read_csv(csv_path)
 
 print("컬럼 확인:", df.columns)
 
+vmin = df[["IDI", "IDI_with_infra"]].min().min()
+vmax = df[["IDI", "IDI_with_infra"]].max().max()
+
 #2. 히트맵에 사용할 컬럼 이름
 idi_col = "IDI_with_infra" # IDI 보고싶으면 IDI로 바꾸기
 print("사용할 지표 컬럼:", idi_col)
@@ -38,7 +41,13 @@ pivot = pivot.loc[region_order, month_order]
 fig, ax = plt.subplots(figsize=(len(month_order) * 0.8, len(region_order) * 0.6))
 
 # 낮을수록 빨강
-im = ax.imshow(pivot.values, aspect="auto", cmap="RdYlBu")
+iim = ax.imshow(
+    pivot.values,
+    aspect="auto",
+    cmap="RdYlBu",
+    vmin=vmin,
+    vmax=vmax
+)
 
 # 축 라벨 
 ax.set_xticks(np.arange(len(month_order)))
@@ -52,7 +61,7 @@ ax.set_ylabel("지역")
 ax.set_title("IDI_with_infra 월별 히트맵")
 
 
-cbar = fig.colorbar(im, ax=ax)
+cbar = fig.colorbar(lim, ax=ax)
 cbar.set_label(idi_col)
 
 #6 값 숫자도 함께 표기하고 싶으면 
@@ -68,5 +77,6 @@ for i in range(len(region_order)):
 
 plt.tight_layout()
 plt.show()
+
 
 
