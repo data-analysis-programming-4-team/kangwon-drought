@@ -71,7 +71,7 @@ merged = gw_gdf.merge(
     right_on="sgg_name",
 )
 
-# 6. 아래쪽 떨어진 조각 제거 (고성 남쪽 섬 같은 거 잘라내기)
+# 6. 떨어져있는 고성 조각 제거
 union_geom = unary_union(merged.geometry)
 if isinstance(union_geom, MultiPolygon):
     main_poly = max(union_geom.geoms, key=lambda g: g.area)
@@ -118,3 +118,4 @@ ax.axis("off")
 
 plt.tight_layout()
 plt.show()
+
