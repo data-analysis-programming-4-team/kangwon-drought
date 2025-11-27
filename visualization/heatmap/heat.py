@@ -12,12 +12,8 @@ df = pd.read_csv(csv_path)
 
 print("컬럼 확인:", df.columns)
 
-# ===== 2. IDI_with_infra 컬럼 이름 자동 탐색 =====
-#   - IDI_with_infra, IDI_with_infra_index 등 여러 가능성 대비
-candidate_cols = [c for c in df.columns if "IDI" in c and "infra" in c.lower()]
-if len(candidate_cols) == 0:
-    raise ValueError("IDI_with_infra 계열 컬럼을 찾지 못했습니다. 컬럼명을 확인해 주세요.")
-idi_col = candidate_cols[0]  # 첫 번째 후보 사용
+# ===== 2. 히트맵에 사용할 컬럼 이름 =====
+idi_col = "IDI_with_infra" # IDI 보고싶으면 IDI로 바꾸기
 print("사용할 지표 컬럼:", idi_col)
 
 # ===== 3. month / region 정리 =====
@@ -72,3 +68,4 @@ for i in range(len(region_order)):
 
 plt.tight_layout()
 plt.show()
+
