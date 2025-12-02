@@ -5,17 +5,13 @@ from datetime import datetime
 import os
 
 # ----사용자 설정----
-OUTPUT_FILENAME = "강원도_농업용수_이용현황.csv"
+OUTPUT_FILENAME = "water_usage.csv"
 TARGET_AREA_CODE = "GWD"  # 강원도 지역 코드
 TARGET_DATE = "20241130" # 조회 기준일 (YYYYMMDD)
 URL = "https://www.wamis.go.kr/wks/wks_agrwaa_lst_data.do"
 # --------------------
 
 def crawl_wamis_data(area_code, target_date, output_filename):
-    """
-    WAMIS 사이트에 POST 요청을 보내 강원도 지역 농업용수 이용현황 데이터를 크롤링하고 CSV로 저장합니다.
-    """
-
     payload = {
         'page': '1', 
         'rows': '100', 
@@ -24,16 +20,13 @@ def crawl_wamis_data(area_code, target_date, output_filename):
         'srchAreaCd': area_code,
         'yymmdd': target_date
     }
-
     # HTTP 요청 헤더 설정
-
     headers = {
         'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)' 
     }
-
     print(f"서버에 데이터 요청- (지역 코드: {area_code}, 기준일: {target_date})")
-
+    
     try:
         # POST 요청 실행
         response = requests.post(URL, data=payload, headers=headers)
@@ -68,4 +61,5 @@ if __name__ == "__main__":
         area_code=TARGET_AREA_CODE, 
         target_date=TARGET_DATE, 
         output_filename=OUTPUT_FILENAME
+
     )
