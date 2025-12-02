@@ -1,0 +1,5 @@
+City,Year,Total_Pop,Served_Pop,Coverage(%),Facility_Capacity(m3/day),Daily_Supply(m3/day),Per_Capita_Supply(L),Service_Points
+Gangneung,2021,215322,205582,95.5,116800,100667,490,58951
+Gangneung,2022,214011,205628,96.1,116800,103187,502,60191
+Sokcho,2021,83825,83552,99.7,52000,35403,424,19482
+Sokcho,2022,84011,83678,99.6,52000,35627,426,19438
