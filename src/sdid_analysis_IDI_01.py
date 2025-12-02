@@ -16,7 +16,7 @@ TARGET_UNIT = '홍천'
 FILE_PATH = "IDI_monthly_only01.csv"
 TREATMENT_START_TIME = "202404"  # 정책 시행 시점 (YYYYMM)
 OUTCOME_VAR = 'IDI'             # 분석 대상 결과 변수
-# ----------------------------------------
+# -------------------------
 
 
 class SDID:
@@ -106,6 +106,7 @@ class SDID:
         plt.title(f"[SDID Analysis for {self.target_unit}] ATT = {self.att:.4f}")
         plt.xlabel("Time (YYYYMM)")
         plt.ylabel(self.outcome_col)
+        plt.ylimit(-2, 2)
         plt.legend()
         plt.grid(True, alpha=0.3)
         plt.xticks(rotation=45)
@@ -168,4 +169,5 @@ if __name__ == "__main__":
 
             except Exception as e:
                 print(f"{TARGET_UNIT} 분석 중 치명적인 오류 발생:")
+
                 print("오류 내용:", e)
