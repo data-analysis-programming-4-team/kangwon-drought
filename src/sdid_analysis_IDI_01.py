@@ -11,7 +11,7 @@ except ImportError:
     print("오류: Matplotlib이 설치되어 있지 않거나 import에 실패함.")
     exit()
 
-# --- 사용자 설정 영역 ---
+# ----사용자 설정 영역----
 TARGET_UNIT = '홍천'
 FILE_PATH = "IDI_monthly_only01.csv"
 TREATMENT_START_TIME = "202404"  # 정책 시행 시점 (YYYYMM)
@@ -84,7 +84,7 @@ class SDID:
         # 보정된 합성 추이 값 (pre_gap를 bias 보정값으로 활용)
         self.synthetic_outcome_corrected = synthetic_outcome + pre_gap
         
-        # 최종 ATT(정책 효과) 계산
+        # 최종 ATT(정책 효과) 계산, ATT = 정책 시행 후 IDI 그래프의 평균 차이. 음수이면 정책이 IDI를 전체적으로 감소시킴
         self.att = np.mean((real_outcome - self.synthetic_outcome_corrected)[post_mask])
         
         return self.att
@@ -171,3 +171,4 @@ if __name__ == "__main__":
                 print(f"{TARGET_UNIT} 분석 중 치명적인 오류 발생:")
 
                 print("오류 내용:", e)
+
