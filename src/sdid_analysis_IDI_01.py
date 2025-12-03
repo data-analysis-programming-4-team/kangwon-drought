@@ -7,16 +7,19 @@ try:
     import matplotlib
     matplotlib.use('Agg') 
     import matplotlib.pyplot as plt
+    import matplotlib.font_manager as fm
 except ImportError:
     print("오류: Matplotlib이 설치되어 있지 않거나 import에 실패함.")
     exit()
 
-# ----사용자 설정 영역----
-TARGET_UNIT = '홍천'
+# --- 사용자 설정 영역 ---
+TARGET_UNIT = '강릉'
 FILE_PATH = "IDI_monthly_only01.csv"
 TREATMENT_START_TIME = "202404"  # 정책 시행 시점 (YYYYMM)
 OUTCOME_VAR = 'IDI'             # 분석 대상 결과 변수
-# -------------------------
+FONT_PATH = "C:\\Users\\PC\\project\\kangwon-drought\\src\\LG_SMART_UI-REGULAR.TTF"
+FONT_NAME = fm.FontProperties(fname=FONT_PATH).get_name()
+# ----------------------------------------
 
 
 class SDID:
@@ -84,7 +87,7 @@ class SDID:
         # 보정된 합성 추이 값 (pre_gap를 bias 보정값으로 활용)
         self.synthetic_outcome_corrected = synthetic_outcome + pre_gap
         
-        # 최종 ATT(정책 효과) 계산, ATT = 정책 시행 후 IDI 그래프의 평균 차이. 음수이면 정책이 IDI를 전체적으로 감소시킴
+        # 최종 ATT(정책 효과) 계산
         self.att = np.mean((real_outcome - self.synthetic_outcome_corrected)[post_mask])
         
         return self.att
@@ -92,21 +95,21 @@ class SDID:
     def plot_and_save(self):
         if self.att is None:
             self.estimate_att()
-            
+        plt.rc('font', family=FONT_NAME)
         plt.figure(figsize=(10, 6))
         
         plt.plot(self.df_pivot.index, self.df_pivot[self.target_unit], 
-                 label=f'Actual Treated: {self.target_unit}', color='black', linewidth=2)
+                 label=f'실제 처치군: {self.target_unit}', color='black', linewidth=2)
         
         plt.plot(self.df_pivot.index, self.synthetic_outcome_corrected, 
-                 label='Synthetic Control (Counterfactual)', color='red', linestyle='--', linewidth=2)
+                 label='합성 대조군', color='red', linestyle='--', linewidth=2)
         
-        plt.axvline(x=self.t_start, color='gray', linestyle=':', label=f'Treatment Start ({self.t_start})')
+        plt.axvline(x=self.t_start, color='gray', linestyle=':', label=f'정책 시행 ({self.t_start})')
         
         plt.title(f"[SDID Analysis for {self.target_unit}] ATT = {self.att:.4f}")
-        plt.xlabel("Time (YYYYMM)")
+        plt.xlabel("시각 (YYYYMM)")
         plt.ylabel(self.outcome_col)
-        plt.ylimit(-2, 2)
+        plt.ylim(-2,2)
         plt.legend()
         plt.grid(True, alpha=0.3)
         plt.xticks(rotation=45)
@@ -169,6 +172,4 @@ if __name__ == "__main__":
 
             except Exception as e:
                 print(f"{TARGET_UNIT} 분석 중 치명적인 오류 발생:")
-
                 print("오류 내용:", e)
-
