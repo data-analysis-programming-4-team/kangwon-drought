@@ -12,8 +12,8 @@ df = pd.read_csv(csv_path)
 
 print("컬럼 확인:", df.columns)
 
-vmin = df[["IDI", "IDI_with_infra"]].min().min()
-vmax = df[["IDI", "IDI_with_infra"]].max().max()
+vmin = -2.0
+vmax = 2.0
 
 #2. 히트맵에 사용할 컬럼 이름
 idi_col = "IDI_with_infra" # IDI 보고싶으면 IDI로 바꾸기
@@ -77,6 +77,7 @@ for i in range(len(region_order)):
 
 plt.tight_layout()
 plt.show()
+
 
 
 
